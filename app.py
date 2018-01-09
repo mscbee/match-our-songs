@@ -1,10 +1,11 @@
-import os
 from flask import Flask, render_template, redirect, url_for, request
+from urllib.parse import quote
+from random import *
+import os
 import requests
 import base64
-from urllib.parse import quote
 import string
-from random import *
+import json
 
 
 app = Flask(__name__)
@@ -15,8 +16,8 @@ allchar = string.ascii_letters + string.punctuation + string.digits
 
 
 #  Client Keys
-CLIENT_ID = <YOUR-CLIENT-ID>
-CLIENT_SECRET = <YOUR-CLIENT-SECRET>
+CLIENT_ID = <CLIENT_ID>
+CLIENT_SECRET = <CLIENT_SECRET>
 
 # For authorizsation
 REDIRECT_URI = "http://0.0.0.0:5000/callback/"
@@ -49,8 +50,17 @@ def index():
 @app.route('/callback/')
 def callback():
     auth_code = request.args['code']
+    request_body_parameters = {
+        "grant_type": "authorization_code",
+        "code": str(auth_code),
+        "redirect_uri": REDIRECT_URI
+    }
+    base_64_encoding = base64.b64encode("{}:{}".format(CLIENT_ID, CLIENT_SECRET).encode('utf-8'))
+    header = {"Authorization": "Basic {}".format(base_64_encoding)}
+    post_request = requests.post("https://accounts.spotify.com/api/token", data=request_body_parameters, headers=header)
 
-    return render_template("index.html")
+    response_data = json.loads(post_request.text)
+    
 
 
 
