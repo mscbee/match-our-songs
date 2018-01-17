@@ -20,7 +20,7 @@ CLIENT_ID = <CLIENT_ID>
 CLIENT_SECRET = <CLIENT_SECRET>
 
 # For authorizsation
-REDIRECT_URI = "http://0.0.0.0:5000/callback/"
+REDIRECT_URI = "http://localhost:3000/callback/" #TODO: whitelist the uri in Spotify Dev Dashboard
 SCOPE = "playlist-read-private user-library-read"
 RESPONSE_TYPE = "code"
 # State is not required but highly recommended
@@ -60,7 +60,7 @@ def callback():
     post_request = requests.post("https://accounts.spotify.com/api/token", data=request_body_parameters, headers=header)
 
     response_data = json.loads(post_request.text)
-    
+
 
 
 
